@@ -52,4 +52,25 @@ string runPowerShell(const string& command)
     return result;
 }
 
+string askLlama(const strin& userTask)
+{
+    string prompt = "You are a Windows IT assistant. "
+        "Respond ONLY with valid JSON like this: "
+        "{\\\"steps\\\": [\\\"step1\\\", \\\"step2\\\"], "
+        "\\\"command\\\": \\\"powershell command\\\"}. "
+        "No text outside JSON. No destructive commands. "
+        "Task: " + userTask;
+
+        string cmd = LLMA_Path +" " + "-m " + MODEL_PATH + " " "--no-display-prompt " + "-n 256" + "--log-disable " + "-p \" + prompt + "\" 2>nul";
+        if (!pipe) return "";
+
+        string result;
+        char buffer[256];
+        while(fgets(buffer, sizeof(buffer), pipe) != nullptr) {
+            result += buffer;
+        }
+        _pclose(pipe);
+        return result;
+}
+
 
