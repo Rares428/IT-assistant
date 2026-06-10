@@ -36,3 +36,20 @@ for (const auto& d : dangerous) {
 }   
 return true;
 }
+
+string runPowerShell(const string& command)
+{
+    string fullCmd= "powershell.exe -NoProfile -Command \"" + command + "\" 2>&1";
+    FILE* pipe= _popen(fullCmd.c_str(), "r");
+    if (!pipe) return "Eror at opening PowerShell";
+
+    string result;
+    char buffer[256];
+    while(fgets(buffer, sizeof(buffer), pipe) != nullptr) {
+        result += buffer;
+    }
+    _pclose(pipe);
+    return result;
+}
+
+
