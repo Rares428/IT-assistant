@@ -73,4 +73,39 @@ string askLlama(const strin& userTask)
         return result;
 }
 
+int main()
+{
+    SetConsoleOutputCP(CP_UTF8);
+    cout <<"=== IT Asistant ===\n\n";
+    
+    while (true)
+    {
+        cout<< "Your task: ";
+        string input;
+        getline(cin, input);
+
+        if(input == "exit" || input == "quit") break;
+        if(input.empty()) continue;
+
+        cout<< "Generating solution...\n";
+        string raw = askLlama(input);
+
+        size_t start = raw.find('{');
+        size_t end = raw.rfind('}');
+        if (start == string::npos || end == string::npos)
+        {
+            cout<< "Error: Invalid response format.\n";
+            continue;
+        }
+    }
+
+    json parsed;
+    try {
+        parsed = json::parse(raw.substr(start, end - start +1));
+
+    }catch (...){
+        cout<< "Error at parsing JSON.\n";
+        continue;
+    }
+}S
 
