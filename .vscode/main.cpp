@@ -107,5 +107,25 @@ int main()
         cout<< "Error at parsing JSON.\n";
         continue;
     }
-}S
+<
+    cout<< "\nSteps:\n";
+    for(const auto& step : parse["steps"])
+    {
+        cout<< " - " << step.get<string>() << endl;
+    }
 
+    string command = parsed["command"].get<string>();
+    cout << "\nCommand: " << command << endl;
+
+    if (!isSafe(command))
+    {
+        cout << "\nCommand BLOCKED. \n\n";
+        continue;
+    }
+
+    cout << "\nIs executing...\n";
+    string output = runPowerShell(command);
+    cout << "------------------\n\n";
+
+    return 0;
+}
