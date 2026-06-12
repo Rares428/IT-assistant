@@ -604,6 +604,7 @@ static const char* HTML_PAGE = R"PAGE(<!DOCTYPE html>
   .badge{font-size:12px;padding:3px 10px;border-radius:999px;vertical-align:middle;margin-left:8px;}
   .badge.admin{background:#064e3b;color:#4ade80;}
   .badge.restricted{background:#3f1d1d;color:#fbbf24;}
+  #micBtn.listening{background:#f87171;color:#fff;}
 </style>
 </head>
 <body>
@@ -614,6 +615,7 @@ static const char* HTML_PAGE = R"PAGE(<!DOCTYPE html>
       <input id="task" type="text" placeholder="What do you want to do?" autofocus>
       <button onclick="run(false)">Run</button>
       <button onclick="quit()" style="background:#334155;color:var(--text)">Quit</button>
+      <button id="micBtn" onclick="toggleMic()" title="Voice command">🎤</button>
     </div>
     <div class="hint">Press Enter to run. Power commands (shutdown/restart) ask for confirmation.</div>
     <div id="result"></div>
@@ -695,6 +697,49 @@ async function quit(){
   try{ await fetch('/api/quit'); }catch(e){}
   document.body.innerHTML = '<div class="wrap"><div class="card ok">IT Assistant stopped. You can close this window.</div></div>';
 }
+
+let recognition = null;
+let listening = false;
+
+function setupMic()
+{
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SR) {
+        document.getElementById('micBtn').style.display = 'none';
+        return;
+    }
+    recognition = new SR();
+    recognition.lang = 'en-US';
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+
+    recognition.onresult = e => {
+        const text = e.results[0][0].transcript;
+        taskEl.value = text;
+        run(false);
+    };
+    recognition.onerror = e => {
+        resultEl.innerHTML = '<div class="card err">Error microphone: ' + esc(e.error) + '</div>';
+    };
+    recognition.onend = () => {
+        listening = false;
+        document.getElementById('micBtn').classList.remove('listening');
+    };
+}
+    function toggleMic()
+    {
+        if(!recognition) return;
+        if(listening)
+        {
+            recognition.stop();
+            return;
+        }
+            listening = true;
+            document.getElementById('micBtn').classList.add('listening');
+            recognition.start();
+    }
+    
+    setupMic();
 </script>
 </body>
 </html>)PAGE";
