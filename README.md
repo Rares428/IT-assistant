@@ -15,4 +15,5 @@ IT Asistant:
                     - "turn brightness to maximum"
 -Warning: -this program uses powershell comands that run directly on your os system and can ask for admin permissions. Run at your own risk. Use it only on your computer.        
 
-<video src="C:\Users\Mihnea\Videos\IT assistant -video.mp4" width="320" height="240" controls></video>
+## Demo Video
+[Watch the demo](demo1.mp4)
